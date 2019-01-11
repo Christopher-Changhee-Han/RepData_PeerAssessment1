@@ -8,31 +8,37 @@ output:
 
 ## Loading and preprocessing the data
 
-```{r}
+
+```r
 act <- read.csv("activity/activity.csv", stringsAsFactors = FALSE)
 act$date <- as.Date(act$date, "%Y-%m-%d")  #convert to date
-
 ```
 
 
 ## What is mean total number of steps taken per day?
 
-```{r}
+
+```r
 library(ggplot2)
 totalsteps <- tapply(act$steps, act$date, sum, na.rm = TRUE)
 hist(totalsteps, 
      main = "Histogram of Total Number of Steps (with NA's)", 
      xlab = "Total Number of Steps")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+```r
 totalmean <- mean(totalsteps)
 totalmedian <- median(totalsteps)
 ```
 
-The mean total number of steps taken per day is `r totalmean` and the median total number of steps taken per day is `r totalmedian`.
+The mean total number of steps taken per day is 9354.2295082 and the median total number of steps taken per day is 10395.
 
 ## What is the average daily activity pattern?
 
-```{r}
+
+```r
 # Average number of steps for each corresponding 5 min interval
 avg5min <- tapply(act$steps, act$interval, mean, na.rm = TRUE)  #average number of steps for each corresponding 5 min interval
 
@@ -41,16 +47,21 @@ plot(avg5min,
      main = "Average Number of Steps Taken, Averaged Across All Days", 
      xlab = "Interal Index", 
      ylab = "Average Number of Steps Taken")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+
+```r
 # Index value for the interval with highest average number of steps.
 max5min <- names(avg5min[which(avg5min == max(avg5min))])
 ```
 
-The maximum number of steps, on average across all days, occured in the `r max5min` interval.
+The maximum number of steps, on average across all days, occured in the 835 interval.
 
 ## Imputing missing values
 
-```{r}
+
+```r
 indexmissing <- is.na(act$steps)
 missing <- sum(indexmissing)
 
@@ -69,21 +80,24 @@ totalsteps2 <- tapply(newact$steps, newact$date, sum, na.rm = TRUE)
 hist(totalsteps2, 
      main = "Histogram of Total Number of Steps (NA's replaced)", 
      xlab = "Total number of Steps")
-
-totalmean2 <- mean(totalsteps2)
-totalmedian2 <- median(totalsteps2)
-
-
 ```
 
-There are `r missing` missing values (coded as NA) in the variable steps in the original data.  
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+```r
+totalmean2 <- mean(totalsteps2)
+totalmedian2 <- median(totalsteps2)
+```
+
+There are 2304 missing values (coded as NA) in the variable steps in the original data.  
 For each missing value, it was replaced with the average number of steps of the corrresponding 5-minute interval.  
-After the replacements, the new mean total number of steps taken per day is `r totalmean2` and the median total number of steps taken per day is `r totalmedian2`. Both the mean and median increased after replacing the NA's.
+After the replacements, the new mean total number of steps taken per day is 1.0766189\times 10^{4} and the median total number of steps taken per day is 1.0766189\times 10^{4}. Both the mean and median increased after replacing the NA's.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r, message= FALSE}
+
+```r
 library(dplyr)
 library(lattice)
 library(ggplot2)
@@ -116,7 +130,8 @@ xyplot(temp ~ interval | days,
        type = "l", 
        ylab = "Number of Steps", 
        main = "Average number of steps taken per 5-minute interval")
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 
